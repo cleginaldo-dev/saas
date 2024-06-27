@@ -1,6 +1,7 @@
 import fastifyCors from '@fastify/cors'
-import { fastify } from 'fastify'
+import fastify from 'fastify'
 import {
+  // jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -16,5 +17,5 @@ app.register(fastifyCors)
 app.register(createAccount)
 
 app.listen({ port: 3333 }).then(() => {
-  console.log('HTTP server running on http://localhost:3333')
+  console.log('HTTP server running!')
 })

@@ -1,7 +1,5 @@
 version: '3.7'
 
-volumes:
-  pg_data:
 services:
   pg:
     container_name: pg_saas
@@ -9,6 +7,6 @@ services:
     ports:
       - '5432:5432'
     environment:
-      - POSTGRESQL_USERNAME=saas
-      - POSTGRESQL_PASSWORD=saas
-      - POSTGRESQL_DATABASE=saas
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=next-saas
