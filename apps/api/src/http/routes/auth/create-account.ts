@@ -1,65 +1,49 @@
-import { hash } from 'bcryptjs'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
+import { BadRequestError } from '@/http/routes/_errors/bad-request-error'
 import { prisma } from '@/lib/prisma'
 
-export async function createAccount(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().post(
-    '/users',
+export async function getProfile(app: FastifyInstance) {
+  app.withTypeProvider<ZodTypeProvider>().get(
+    '/profile',
     {
       schema: {
-        summary: 'Create new account',
-        body: z.object({
-          name: z.string(),
-          email: z.string().email(),
-          password: z.string().min(6),
-        }),
+        tags: ['Auth'],
+        summary: 'Get authenticated user profile',
+        response: {
+          200: z.object({
+            user: z.object({
+              id: z.string().uuid(),
+              name: z.string().nullable(),
+              email: z.string().email(),
+              avatarUrl: z.string().url().nullable(),
+            }),
+          }),
+        },
       },
     },
     async (request, reply) => {
-      const { name, email, password } = request.body
+      const { sub } = await request.jwtVerify<{ sub: string }>()
 
-      const userWithSameEmail = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatarUrl: true,
+        },
         where: {
-          email,
+          id: sub,
         },
       })
 
-      if (userWithSameEmail) {
-        return reply
-          .status(400)
-          .send({ message: 'User with same e-mail already exists.' })
+      if (!user) {
+        throw new BadRequestError('User not found.')
       }
 
-      const [, domain] = email.split('@')
-
-      const autoJoinOrganization = await prisma.organization.findFirst({
-        where: {
-          domain,
-          shouldAttachUsersByDomain: true,
-        },
-      })
-
-      const passwordHash = await hash(password, 6)
-
-      await prisma.user.create({
-        data: {
-          name,
-          email,
-          passwordHash,
-          member_on: autoJoinOrganization
-            ? {
-                create: {
-                  organizationId: autoJoinOrganization.id,
-                },
-              }
-            : undefined,
-        },
-      })
-
-      return reply.status(201).send()
+      return reply.send({ user })
     },
   )
 }
