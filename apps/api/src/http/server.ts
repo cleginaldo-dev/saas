@@ -12,7 +12,6 @@ import {
 
 import { authenticateWithPassword } from '@/http/routes/auth/authenticate-with-password'
 import { getProfile } from '@/http/routes/auth/get-profile'
-
 import { createAccount } from './routes/auth/create-account'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
