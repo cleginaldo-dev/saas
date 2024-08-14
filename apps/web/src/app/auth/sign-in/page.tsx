@@ -30,6 +30,10 @@ export default function SignIn() {
         Sign in with email
       </Button>
 
+      <Button className="w-full" variant="link" size="sm" asChild>
+        <Link href="/auth/sign-up">Create new account</Link>
+      </Button>
+
       <Separator />
 
       <Button type="submit" variant="outline" className="w-full">
