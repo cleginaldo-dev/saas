@@ -1,22 +1,25 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+import githubIcon from '@/assets/github-icon.svg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@radix-ui/react-label'
-import { Separator } from '@radix-ui/react-separator'
-import Link from 'next/link'
-import githubIcon from '@/assets/github-icon.svg'
-import Image from 'next/image'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 
-export default function SignIn() {
+import { signInWithEmailAndPassword } from './actions'
+
+export default function SignInPage() {
   return (
-    <form action="" className="space-y-4">
+    <form action={signInWithEmailAndPassword} className="space-y-4">
       <div className="space-y-1">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" name="email" id="email" />
+        <Label htmlFor="email">E-mail</Label>
+        <Input name="email" type="email" id="email" />
       </div>
 
       <div className="space-y-1">
-        <Label htmlFor="password">Senha</Label>
-        <Input type="password" name="password" id="password" />
+        <Label htmlFor="password">Password</Label>
+        <Input name="password" type="password" id="password" />
 
         <Link
           href="/auth/forgot-password"
@@ -26,8 +29,8 @@ export default function SignIn() {
         </Link>
       </div>
 
-      <Button type="submit" className="w-full">
-        Sign in with email
+      <Button className="w-full" type="submit">
+        Sign in with e-mail
       </Button>
 
       <Button className="w-full" variant="link" size="sm" asChild>
@@ -36,7 +39,7 @@ export default function SignIn() {
 
       <Separator />
 
-      <Button type="submit" variant="outline" className="w-full">
+      <Button type="submit" className="w-full" variant="outline">
         <Image src={githubIcon} alt="" className="mr-2 size-4 dark:invert" />
         Sign in with GitHub
       </Button>
