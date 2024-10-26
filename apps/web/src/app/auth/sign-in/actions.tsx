@@ -2,8 +2,9 @@
 'use server'
 
 import { HTTPError } from 'ky'
-import { z } from 'zod'
 import { cookies } from 'next/headers'
+import { z } from 'zod'
+
 import { signInWithPassword } from '@/http/sign-in-with-password'
 
 const signInSchema = z.object({
@@ -36,7 +37,7 @@ export async function signInWithEmailAndPassword(data: FormData) {
     })
   } catch (err) {
     if (err instanceof HTTPError) {
-      const { message }: any = await err.response.json()
+      const { message } = (await err.response.json()) as any
 
       return { success: false, message, errors: null }
     }
