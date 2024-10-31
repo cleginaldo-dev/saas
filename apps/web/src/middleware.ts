@@ -1,13 +1,18 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
   const response = NextResponse.next()
+
   if (pathname.startsWith('/org')) {
     const [, , slug] = pathname.split('/')
-    console.log('slug:', slug)
+
+    response.cookies.set('org', slug)
+  } else {
+    response.cookies.delete('org')
   }
-  console.log('pathname:', request.nextUrl.pathname)
+
   return response
 }
 
@@ -18,8 +23,8 @@ export const config = {
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
